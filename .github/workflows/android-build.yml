@@ -20,24 +20,25 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
-    - name: Install HarmonyOS Build Tools
+    - name: Install HarmonyOS Build Tools (Automatically)
       run: |
-        wget https://developer.harmonyos.com/cn/docs/documentation/doc-guides/deveco-ubuntu-20200413-4202.zip -P /tmp
-        unzip /tmp/deveco-ubuntu-20200413-4202.zip -d /tmp
+        # 试图下载鸿蒙开发工具 (DevEco) 安装包
+        wget https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V3/deveco-linux.zip -P /tmp
+        unzip /tmp/deveco-linux.zip -d /tmp
         sudo mv /tmp/deveco /opt/
         export PATH=$PATH:/opt/deveco/bin
 
     - name: List files in the working directory
       run: |
-        ls -la  # 列出当前目录的文件
+        ls -la  # 列出当前目录的文件，以确保路径正确
 
     - name: Build HarmonyOS Project
       run: |
         cd your_harmonyos_project_directory  # 进入你的鸿蒙项目目录
-        deveco build --mode release  # 使用 DevEco 工具进行构建
+        deveco build --mode release  # 使用 DevEco 工具构建项目
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: harmonyos-app-release.apk
-        path: your_harmonyos_project_directory/output/*.apk  # 根据输出路径调整
+        path: your_harmonyos_project_directory/output/*.apk  # 输出 APK 的路径

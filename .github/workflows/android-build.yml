@@ -28,11 +28,17 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
+    - name: Check if gradlew exists
+      run: |
+        ls -l  # 列出当前目录的文件，确保 gradlew 文件存在
+
     - name: Build with Gradle
-      run: ./gradlew assembleRelease  # 确保 gradlew 脚本在项目根目录
+      run: |
+        chmod +x ./gradlew  # 确保 gradlew 文件可执行
+        ./gradlew assembleRelease
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: app-release.apk
-        path: app/build/outputs/apk/release/app-release.apk  # 确保 APK 路径正确
+        path: app/build/outputs/apk/release/app-release.apk

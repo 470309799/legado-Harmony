@@ -14,31 +14,26 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Setup JDK
+    - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
         java-version: '11'
         distribution: 'adopt'
 
-    - name: Cache Gradle
-      uses: actions/cache@v3
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-
-    - name: Check if gradlew exists
+    - name: Install Gradle
       run: |
-        ls -l  # 列出当前目录的文件，确保 gradlew 文件存在
+        wget https://services.gradle.org/distributions/gradle-7.4.2-bin.zip -P /tmp
+        unzip /tmp/gradle-7.4.2-bin.zip -d /tmp
+        export PATH=$PATH:/tmp/gradle-7.4.2/bin
+        gradle -v  # 确保 Gradle 正常安装
 
-    - name: Build with Gradle
+    - name: Build APK
       run: |
-        chmod +x ./gradlew  # 确保 gradlew 文件可执行
-        ./gradlew assembleRelease
+        cd android  # 进入 Android 项目目录（根据需要修改）
+        gradle assembleRelease  # 使用 Gradle 构建 APK
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: app-release.apk
-        path: app/build/outputs/apk/release/app-release.apk
+        path: android/app/build/outputs/apk/release/app-release.apk  # 根据实际路径修改

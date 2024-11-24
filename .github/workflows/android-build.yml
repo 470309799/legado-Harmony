@@ -1,4 +1,4 @@
-name: Build APK
+name: Build HarmonyOS APK
 
 on:
   push:
@@ -20,20 +20,24 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
-    - name: Install Gradle
+    - name: Install HarmonyOS Build Tools
       run: |
-        wget https://services.gradle.org/distributions/gradle-7.4.2-bin.zip -P /tmp
-        unzip /tmp/gradle-7.4.2-bin.zip -d /tmp
-        export PATH=$PATH:/tmp/gradle-7.4.2/bin
-        gradle -v  # 确保 Gradle 正常安装
+        wget https://developer.harmonyos.com/cn/docs/documentation/doc-guides/deveco-ubuntu-20200413-4202.zip -P /tmp
+        unzip /tmp/deveco-ubuntu-20200413-4202.zip -d /tmp
+        sudo mv /tmp/deveco /opt/
+        export PATH=$PATH:/opt/deveco/bin
 
-    - name: Build APK
+    - name: List files in the working directory
       run: |
-        cd android  # 进入 Android 项目目录（根据需要修改）
-        gradle assembleRelease  # 使用 Gradle 构建 APK
+        ls -la  # 列出当前目录的文件
+
+    - name: Build HarmonyOS Project
+      run: |
+        cd your_harmonyos_project_directory  # 进入你的鸿蒙项目目录
+        deveco build --mode release  # 使用 DevEco 工具进行构建
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
-        name: app-release.apk
-        path: android/app/build/outputs/apk/release/app-release.apk  # 根据实际路径修改
+        name: harmonyos-app-release.apk
+        path: your_harmonyos_project_directory/output/*.apk  # 根据输出路径调整
